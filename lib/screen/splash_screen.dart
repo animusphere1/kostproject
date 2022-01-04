@@ -17,22 +17,10 @@ class _SplashScreenState extends State<SplashScreen> {
     init();
   }
 
-  String nama(String namaSaya) {
-    var hasil = namaSaya.split('');
-
-    print(hasil);
-
-    return hasil[4] != ' ' ? hasil[4] : hasil[4 + 2];
-  }
-
   void init() async {
-    var hasil = nama('Doni Gunawan');
+    await Future.delayed(const Duration(seconds: 2));
 
-    print(hasil);
-
-    await Future.delayed(const Duration(seconds: 4));
-
-    Get.toNamed(RouteGenerator.routeHome, arguments: hasil);
+    Get.toNamed(RouteGenerator.routeHome, arguments: null);
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kost/screen/home_screen.dart';
 import 'package:kost/screen/splash_screen.dart';
+import 'core/utils/debug.dart';
 import 'router_generator.dart';
 
 import 'package:get/get.dart';
@@ -14,6 +15,10 @@ void main() {
 }
 
 Future<void> init() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  debug('awalan');
+
   await Future.delayed(const Duration(seconds: 2));
 }
 
@@ -27,10 +32,12 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return const GetMaterialApp(
+    return GetMaterialApp(
       title: 'Hey Kost',
+      debugShowCheckedModeBanner: false,
       onGenerateRoute: RouteGenerator.onGenerateRoute,
-      home: SplashScreen(),
+      themeMode: ThemeMode.light,
+      home: HomeScreen(),
     );
   }
 }

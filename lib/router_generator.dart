@@ -12,14 +12,9 @@ class RouteGenerator {
 
     switch (settings.name) {
       case routeHome:
-        if (arguments is String) {
-          return GetPageRoute(
-            page: () => HomeScreen(
-              nama: arguments,
-            ),
-          );
-        }
-        return null;
+        return GetPageRoute(
+          page: () => HomeScreen(),
+        );
     }
   }
 }
