@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kost/screen/home_screen.dart';
-import 'package:kost/screen/splash_screen.dart';
+import 'package:kost/screen/core_screen.dart';
+import 'screen/screen.dart';
 import 'core/utils/debug.dart';
 import 'router_generator.dart';
 
@@ -37,7 +37,8 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       onGenerateRoute: RouteGenerator.onGenerateRoute,
       themeMode: ThemeMode.light,
-      home: HomeScreen(),
+      theme: Theme.of(context),
+      home: const CoreScreen(),
     );
   }
 }
