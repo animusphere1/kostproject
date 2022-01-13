@@ -13,7 +13,7 @@ class RouteGenerator {
     switch (settings.name) {
       case routeHome:
         return GetPageRoute(
-          page: () => HomeScreen(),
+          page: () => const HomeScreen(),
         );
     }
   }

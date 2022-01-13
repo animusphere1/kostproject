@@ -6,5 +6,6 @@ class HexColor {
   static final fontColorsBlack = '#191919'.toColor();
   static final fontsColorsBlue = '#0C48A1'.toColor();
 
+  static final containerItemsColorsPurple = '#D55C89'.toColor();
   static final containerItemsLight = '#0A0F0F'.toColor();
 }

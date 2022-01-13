@@ -21,69 +21,80 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: HexColor.backgroundColorsLight,
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              appBar(context),
-              SizedBox(
-                height: heightMediaQuery(context) * 0.04,
+        body: Stack(
+          children: [
+            RefreshIndicator(
+              edgeOffset: 50,
+              onRefresh: () async => await Future.delayed(
+                const Duration(seconds: 2),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.only(left: 20.0, right: 20, bottom: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Distance You',
-                      style: GoogleFonts.nunito(
-                        color: HexColor.fontsColorsBlue,
-                        // letterSpacing: -0.1,
-                        fontWeight: FontWeight.bold,
+                    SizedBox(
+                      height: heightMediaQuery(context) * 0.17,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20.0, right: 20, bottom: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Distance You',
+                            style: GoogleFonts.nunito(
+                              color: HexColor.fontsColorsBlue,
+                              // letterSpacing: -0.1,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'See More',
+                            style: GoogleFonts.nunito(
+                              color: Colors.grey.shade500,
+                              // letterSpacing: -0.1,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Text(
-                      'See More',
-                      style: GoogleFonts.nunito(
-                        color: Colors.grey.shade500,
-                        // letterSpacing: -0.1,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
+                    listDistance(context),
+                    SizedBox(height: heightMediaQuery(context) * 0.02),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Text(
+                        'Following',
+                        style: GoogleFonts.nunito(
+                          color: HexColor.fontsColorsBlue,
+                          // letterSpacing: -0.1,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: heightMediaQuery(context) * 0.02),
+                    SizedBox(
+                      height: heightMediaQuery(context) * 0.22,
+                      child: ListView.builder(
+                        itemCount: 4,
+                        physics: const PageScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, i) => followingItem(context, i),
                       ),
                     ),
                   ],
                 ),
               ),
-              listDistance(context),
-              SizedBox(height: heightMediaQuery(context) * 0.04),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Text(
-                  'Following',
-                  style: GoogleFonts.nunito(
-                    color: HexColor.fontsColorsBlue,
-                    // letterSpacing: -0.1,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              SizedBox(height: heightMediaQuery(context) * 0.04),
-              SizedBox(
-                height: heightMediaQuery(context) * 0.22,
-                child: ListView.builder(
-                  itemCount: 4,
-                  physics: const PageScrollPhysics(),
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, i) => followingItem(context, i),
-                ),
-              ),
-            ],
-          ),
+            ),
+            appBar(context),
+          ],
         ),
       ),
     );
@@ -134,6 +145,7 @@ class _HomeScreenState extends State<HomeScreen>
   Widget appBar(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+      height: heightMediaQuery(context) * 0.135,
       decoration: const BoxDecoration(
         color: Colors.white,
       ),
@@ -170,8 +182,8 @@ class _HomeScreenState extends State<HomeScreen>
                   style: GoogleFonts.nunito(
                     fontSize: 17,
                     letterSpacing: -0.5,
-                    fontWeight: FontWeight.bold,
-                    color: HexColor.fontsColorsBlue,
+                    fontWeight: FontWeight.w800,
+                    color: HexColor.fontColorsBlack,
                     wordSpacing: -0.5,
                   ),
                 ),
@@ -234,6 +246,5 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }
