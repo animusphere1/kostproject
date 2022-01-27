@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kost/core/controller/home_controller.dart';
 import 'package:kost/core/models/distanceyou_models.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../widget/widget.dart';
 import 'package:kost/core/utils/utils.dart';
@@ -21,6 +24,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    var controller = Get.put(HomeController());
+
     super.build(context);
     return SafeArea(
       child: Scaffold(
@@ -30,9 +35,9 @@ class _HomeScreenState extends State<HomeScreen>
           children: [
             RefreshIndicator(
               edgeOffset: 50,
-              onRefresh: () async => await Future.delayed(
-                const Duration(seconds: 2),
-              ),
+              onRefresh: () async {
+                await controller.refreshIndicator();
+              },
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,15 +85,7 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                     ),
                     SizedBox(height: heightMediaQuery(context) * 0.02),
-                    SizedBox(
-                      height: heightMediaQuery(context) * 0.22,
-                      child: ListView.builder(
-                        itemCount: 4,
-                        physics: const PageScrollPhysics(),
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, i) => followingItem(context, i),
-                      ),
-                    ),
+                    listFollowing(context),
                   ],
                 ),
               ),
@@ -100,10 +97,35 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget followingItem(BuildContext context, int i) {
+  Widget listFollowing(BuildContext context) {
+    return GetX<HomeController>(
+      builder: (controller) {
+        return SizedBox(
+          height: heightMediaQuery(context) * 0.22,
+          child: ListView.builder(
+            controller: controller.scrollController.value,
+            itemCount: 4,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, i) => followingItem(
+              context,
+              i,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget followingItem(
+    BuildContext context,
+    int i,
+  ) {
     return Container(
       width: widthMediaQuery(context),
-      padding: const EdgeInsets.only(right: 20, left: 20),
+      padding: const EdgeInsets.only(
+        left: 20,
+        right: 20,
+      ),
       child: Container(
         decoration: BoxDecoration(
           color: i.isEven ? Colors.grey : Colors.yellow,
@@ -212,36 +234,85 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  List<Map<String, dynamic>> list = [
-    {'name': 'Fajar'},
-    {'name': 'Doni'},
-  ];
-
   Widget listDistance(BuildContext context) {
-    return SizedBox(
-      height: heightMediaQuery(context) * 0.3,
-      child: ListView.builder(
-        itemCount: list.length,
-        scrollDirection: Axis.horizontal,
-        physics: const PageScrollPhysics(),
-        itemBuilder: (context, i) => i != 4
-            ? DistanceItem(
-                context: context,
-                distanceYou: DistanceYouModel.fromMap(list[i]),
-              )
-            : Container(
-                width: widthMediaQuery(context) * 0.3,
-                padding: const EdgeInsets.only(right: 20, left: 5),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.black12,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10),
+    return GetX<HomeController>(
+      init: HomeController(),
+      builder: (controller) {
+        if (controller.list.isEmpty && controller.isLoad.value) {
+          return SizedBox(
+            height: heightMediaQuery(context) * 0.3,
+            child: Shimmer.fromColors(
+              direction: ShimmerDirection.ltr,
+              period: const Duration(seconds: 2),
+              child: const DistanceItemShimmer(),
+              baseColor: Colors.white,
+              highlightColor: Colors.grey.withOpacity(0.5),
+            ),
+          );
+        }
+
+        if (controller.list.isEmpty && !controller.isLoad.value) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: SizedBox(
+              height: heightMediaQuery(context) * 0.3,
+              child: Row(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(right: 10),
+                    width: widthMediaQuery(context) * 0.4,
+                    decoration: const BoxDecoration(color: Colors.yellow),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text(
+                          "Oops, tidak ada kost disekitarmu",
+                          textAlign: TextAlign.start,
+                          style: GoogleFonts.nunito(
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
+                ],
               ),
-      ),
+            ),
+          );
+        }
+
+        return GestureDetector(
+          onTap: () => controller.change(),
+          child: SizedBox(
+            height: heightMediaQuery(context) * 0.3,
+            child: ListView.builder(
+              itemCount: controller.list.length + 1,
+              scrollDirection: Axis.horizontal,
+              physics: const PageScrollPhysics(),
+              itemBuilder: (context, i) => i != controller.list.length
+                  ? DistanceItem(
+                      context: context,
+                      distanceYou: DistanceYouModel.fromMap(controller.list[i]),
+                    )
+                  : Container(
+                      width: widthMediaQuery(context) * 0.3,
+                      padding: const EdgeInsets.only(right: 20, left: 5),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+            ),
+          ),
+        );
+      },
     );
   }
 

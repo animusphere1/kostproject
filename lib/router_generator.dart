@@ -13,6 +13,7 @@ class RouteGenerator {
     switch (settings.name) {
       case routeHome:
         return GetPageRoute(
+          transition: Transition.downToUp,
           page: () => const HomeScreen(),
         );
     }

@@ -5,6 +5,15 @@ class DistanceYouModel {
   DistanceYouModel({this.isBookmark, this.name});
 
   factory DistanceYouModel.fromMap(Map<String, dynamic> map) {
-    return DistanceYouModel(isBookmark: true, name: map['name'] ?? 'Kosong');
+    String? nameLocal;
+
+    if (map.containsKey('name')) {
+      nameLocal = map['name'];
+    }
+
+    return DistanceYouModel(
+      isBookmark: map['isBookmark'] ?? false,
+      name: nameLocal ?? '',
+    );
   }
 }
